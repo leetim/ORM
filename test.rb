@@ -17,6 +17,7 @@ end
 # Test::Unit::UI::Console::TestRunner.run MyTest
 # p Test
 
+# Бывает же
 # a = Test2.new
 # a.deleteby_name_eq("D")
 # r = a.select
