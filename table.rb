@@ -72,6 +72,10 @@ module ORM
 			end
 		end
 
+		def to_a()
+			@@fields_reader.map{|i| self.send i}
+		end
+
 		def method_missing(name, *args)
 			if name.to_s.split("_").size == 2
 				method, field = name.to_s.split("_").map(&:to_sym)

@@ -1,5 +1,7 @@
-require_relative "orm"
+require_relative "table"
 require "test/unit"
+
+ORM::Database.init("test.sqlite")
 
 class Test2 < ORM::Table
 	ORM::Database.init "test1.sqlite"
@@ -14,6 +16,10 @@ class MyTest < Test::Unit::TestCase
 	end
 end
 
+a = Test2.new
+a.select.each do |x|
+	p x.to_a
+end
 # Test::Unit::UI::Console::TestRunner.run MyTest
 # p Test
 
