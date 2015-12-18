@@ -1,25 +1,37 @@
 require_relative "table"
 require "test/unit"
 
+system("rm test.sqlite")
 ORM::Database.init("test.sqlite")
 
 class Test2 < ORM::Table
-	ORM::Database.init "test1.sqlite"
 	define_method(:name){String}
 	define_method(:surname){String}
 	define_method(:price){Fixnum}
 end
 
+
 class MyTest < Test::Unit::TestCase
-	def test01
-		self.assert(true)
+	@@a = Test2.new
+	@@x = [
+		[9, "D", "Bespalov", 13],
+		[10, "D", "Bespalov", 13],
+		[11, "D", "Bespalov", 13],
+		[2, "B", "Batrakov", 13],
+		[3, "C", "Batrakov", 13],
+		[4, "D", "Batrakov", 13],
+		[5, "E", "Batrakov", 13],
+		[6, "F", "Batrakov", 13]
+	]
+
+	def test01_select
+		@@x.each do |i|
+			@@a.insert(*i)
+			self.assert(@@a.find(i.shift)[0].to_a == i)
+		end
 	end
 end
 
-a = Test2.new
-a.select.each do |x|
-	p x.to_a
-end
 # Test::Unit::UI::Console::TestRunner.run MyTest
 # p Test
 

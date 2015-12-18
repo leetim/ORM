@@ -98,6 +98,7 @@ module ORM
 			@line_class = Class.new(Line)
 			@line_class.make_fields a, @table_name
 			@fields = a.map &:to_s
+			a.shift
 			create_table self.class.to_s, a.map(&:to_s), a.map{|x| self.send x}
 		end
 
@@ -105,7 +106,7 @@ module ORM
 			@table_name = name
 			@fields = fields
 			s = [fields, types.map{|i| @@hex[i]} ].transpose.map!{|x| x.join(" ")}.join(", ")
-			@@db.execute("CREATE TABLE IF NOT EXISTS #{name} (id INTEGER PRIMARY KEY, #{s})")	
+			@@db.execute("CREATE TABLE IF NOT EXISTS #{name} (id INTEGER PRIMARY KEY, #{s})")
 		end
 
 		def insert(*args)
