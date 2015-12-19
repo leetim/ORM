@@ -134,39 +134,26 @@ class MyTest < Test::Unit::TestCase
 		self.assert_equal(@@a.update_foo_eq(13), nil)
 		self.assert_equal(@@a.delete_bar_eq(13), nil)
 		self.assert_equal(@@a.find_bar_eq(13), nil)
+		self.assert_equal(@@a.find_bar_eq_assa_dsada(13), nil)
 
 		@@a.select.each do |x|
 			self.assert_equal(x.foo, nil)
 			self.assert_equal(x.update_foo, nil)
 		end
 	end
+
+	def test10_
+		@@a.insert(1011, "update", "IVANOV1", 2410000)
+		el = @@a.find(1011)[0]
+		self.assert_equal(el.id, 1011)
+		self.assert_equal(el.name, "update")
+		self.assert_equal(el.surname, "IVANOV1")
+		self.assert_equal(el.price, 2410000)
+
+		el.update_name "Vasya"
+		el.update_surname "Petrov"
+		el.update_price 0
+
+		self.assert_equal(@@a.find(1011)[0], el)
+	end
 end
-
-# Test::Unit::UI::Console::TestRunner.run MyTest
-# p Test
-
-# Бывает же
-# a = Test2.new
-# a.deleteby_name_eq("D")
-# r = a.select
-#p r
-# r.each do |line|
-	#line.update_price(112)
-# 	puts line.to_s
-# end
-# p a.findby_name_gt "b"
-# p 1
-# p "asss".to_sym
-# p "asss".class.instance_methods
-# a.insert(9, "D", "Bespalov", 13)
-# a.insert(10, "D", "Bespalov", 13)
-# a.insert(11, "D", "Bespalov", 13)
-# a.insert(2, "B", "Batrakov", 13)
-# a.insert(3, "C", "Batrakov", 13)
-# a.insert(4, "D", "Batrakov", 13)
-# a.insert(5, "E", "Batrakov", 13)
-# a.insert(6, "F", "Batrakov", 13)
-# a.commit
-# ORM::Database.close
-
-# p ORM::Table
