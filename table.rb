@@ -55,7 +55,7 @@ module ORM
 
 		def delete()
 			if not self.deleted?
-				@@db.execute("DELETE FROM #{@table_name} WHERE id = ?", self.id)
+				@@db.execute("DELETE FROM #{@@table_name} WHERE id = ?", self.id)
 			end
 		end
 
@@ -76,9 +76,17 @@ module ORM
 			@@fields_reader.map{|i| self.send i}
 		end
 
+		def ==(other)
+			self.to_a == other.to_a
+		end
+
 		def method_missing(name, *args)
 			if name.to_s.split("_").size == 2
 				method, field = name.to_s.split("_").map(&:to_sym)
+				# p "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+				# p field
+				# p @@fields_reader.include? field
+				if method != :update or not @@fields_reader.include? field then return nil end
 				self.send(method, field, *args)
 			else
 				return nil
@@ -117,15 +125,15 @@ module ORM
 			@@db.execute("UPDATE #{@table_name} SET #{@fields.map{|x| x + " = ?"}.join ', '} WHERE id = ?", *args, id)
 		end
 
-		def updateby(logic_op = :eq, field_name = "id", *values)
-			@@db.execute("UPDATE #{@table_name} SET #{@fields.map{|x| x + " = ?"}.join ', '} WHERE #{field_name} #{@@logic_operations[logic_op]} ?", *args, id)
-		end
+		# def update(logic_op = :eq, field_name = "id", field_value,  *values)
+		# 	@@db.execute("UPDATE #{@table_name} SET #{@fields.map{|x| x + " = ?"}.join ', '} WHERE #{field_name} #{@@logic_operations[logic_op]} ?", *args, field_value)
+		# end
 
-		def delete(id)
-			@@db.execute("DELETE FROM #{@table_name} WHERE id = ?", id)
-		end
+		# def delete(id)
+		# 	@@db.execute("DELETE FROM #{@table_name} WHERE id = ?", id)
+		# end
 
-		def deleteby(logic_op = :eq, field_name = "id", value)
+		def delete(logic_op = :eq, field_name = "id", value)
 			@@db.execute("DELETE FROM #{@table_name} WHERE #{field_name} #{@@logic_operations[logic_op]} ?", value)
 		end
 
@@ -144,7 +152,10 @@ module ORM
 			else
 				return nil
 			end
-			if [:find, :deleteby].include?(method)
+			# p (@fields.map(&:to_sym).push(:id))
+			# p field
+			# p (@fields.map(&:to_sym).push(:id)).include?(field)
+			if [:find, :delete].include?(method) and (@fields.map(&:to_sym).push(:id)).include?(field)
 				self.send method, logic_op, field, *args
 			end
 		end
