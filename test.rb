@@ -1,5 +1,9 @@
-require_relative "table"
 require "test/unit"
+require "simplecov"
+
+SimpleCov.start
+
+require_relative "table"
 
 system("rm test.sqlite")
 ORM::Database.init("test.sqlite")
